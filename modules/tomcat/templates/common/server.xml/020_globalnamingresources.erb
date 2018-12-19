@@ -1,0 +1,34 @@
+
+  <GlobalNamingResources>
+<%- if @globalnaming_environments and ! @globalnaming_environments.empty? -%>
+  <%- [@globalnaming_environments].flatten.compact.each do |environment| -%>
+    <%- environment.each_pair do |attrib, value| %>
+      <%- if attrib == environment.keys.first -%>
+    <Environment <%= attrib %>=<%= "#{value}".encode(:xml => :attr) -%>
+      <%- else -%>
+                 <%= attrib %>=<%= "#{value}".encode(:xml => :attr) -%>
+      <%- end -%>
+    <%- end %> />
+  <%- end -%>
+<%- end -%>
+<%- if @userdatabase_realm -%>
+
+    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="User database that can be updated and saved"
+              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml" />
+<%- end -%>
+<%- if @globalnaming_resources and ! @globalnaming_resources.empty? -%>
+  <%- [@globalnaming_resources].flatten.compact.each do |resource| -%>
+    <%- resource.each_pair do |attrib, value| %>
+      <%- if attrib == resource.keys.first -%>
+    <Resource <%= attrib %>=<%= "#{value}".encode(:xml => :attr) -%>
+      <%- else -%>
+              <%= attrib %>=<%= "#{value}".encode(:xml => :attr) -%>
+      <%- end -%>
+    <%- end %> />
+  <%- end -%>
+<%- end -%>
+
+  </GlobalNamingResources>

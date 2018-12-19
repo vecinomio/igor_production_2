@@ -1,0 +1,41 @@
+
+<%- if @versionlogger_listener and scope.function_versioncmp([@version_real, '7']) >= 0 -%>
+  <Listener className="org.apache.catalina.startup.VersionLoggerListener" <% -%>
+  <%- if defined? @versionlogger_logargs %>logArgs="<%= @versionlogger_logargs %>" <% end -%>
+  <%- if defined? @versionlogger_logenv %>logEnv="<%= @versionlogger_logenv.encode(:xml => :attr) %>" <% end -%>
+  <%- if defined? @versionlogger_logprops %>logProps="<%= @versionlogger_logprops %>" <% end %>/>
+<%- end -%>
+<%- if @maj_version == '7' -%>
+  <Listener className="org.apache.catalina.core.JasperListener" />
+<%- end -%>
+<%- if scope.function_versioncmp([@maj_version, '6']) <= 0 -%>
+  <Listener className="org.apache.catalina.mbeans.ServerLifecycleListener" />
+<%- end -%>
+<%- if @maj_version == '5' -%>
+  <Listener className="org.apache.catalina.storeconfig.StoreConfigLifecycleListener" />
+<%- end -%>
+<%- if scope.function_versioncmp([@maj_version, '6']) >= 0 -%>
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener"<% -%>
+    <%- if @jrememleak_attrs and ! @jrememleak_attrs.empty? -%>
+      <%- @jrememleak_attrs.each_pair do |attrib, value| %>
+            <%= attrib %>=<%= "#{value}".encode(:xml => :attr) -%>
+      <%- end -%>
+    <%- end %> />
+<%- end -%>
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+<%- if scope.function_versioncmp([@maj_version, '7']) >= 0 -%>
+  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
+<%- end -%>
+<%- if @jmx_listener -%>
+  <Listener className="org.apache.catalina.mbeans.JmxRemoteLifecycleListener" rmiRegistryPortPlatform="<%= @jmx_registry_port %>" rmiServerPortPlatform="<%= @jmx_server_port %>" <% -%>
+  <%- if @jmx_bind_address and @jmx_bind_address != '' -%> rmiBindAddress="<%= @jmx_bind_address %>" <% end -%>
+  <%- if defined? @jmx_uselocalports %>useLocalPorts="<%= @jmx_uselocalports %>" <% end -%>/>
+<%- end -%>
+<%- if @apr_listener -%>
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" <% if @apr_sslengine and @apr_sslengine != '' -%>SSLEngine="<%= @apr_sslengine %>" <% end -%>/>
+<%- end -%>
+<%- if @listeners and ! @listeners.empty? -%>
+  <%- [@listeners].flatten.compact.each do |listener| -%>
+  <Listener<%- listener.each_pair do |attrib, value| -%> <%= attrib %>=<%= "#{value}".encode(:xml => :attr) %><%- end -%> />
+  <%- end -%>
+<%- end -%>

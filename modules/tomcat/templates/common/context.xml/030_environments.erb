@@ -1,0 +1,9 @@
+<%- [@environments].flatten.compact.each do |environment| -%>
+  <%- environment.each_pair do |attrib, value| %>
+    <%- if attrib == environment.keys.first -%>
+    <Environment <%= attrib %>=<%= "#{value}".encode(:xml => :attr) -%>
+    <%- else -%>
+                 <%= attrib %>=<%= "#{value}".encode(:xml => :attr) -%>
+    <%- end -%>
+  <%- end %> />
+<%- end -%>

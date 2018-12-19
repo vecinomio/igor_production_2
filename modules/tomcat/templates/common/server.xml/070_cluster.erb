@@ -1,0 +1,43 @@
+
+      <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster"
+               channelSendOptions="8">
+         <Manager className="org.apache.catalina.ha.session.DeltaManager"
+                  expireSessionsOnShutdown="false"
+                  notifyListenersOnReplication="true"/>
+         <Channel className="org.apache.catalina.tribes.group.GroupChannel">
+            <Membership className="org.apache.catalina.tribes.membership.McastService"
+                        address="228.0.0.4"
+<%- if @cluster_membership_bind_address -%>
+                        bind="<%= @cluster_membership_bind_address %>"
+<%- end -%>
+                        port="<%= @cluster_membership_port %>"
+                        domain="<%= @cluster_membership_domain %>"
+                        frequency="500"
+                        dropTime="3000"/>
+            <Receiver className="org.apache.catalina.tribes.transport.nio.NioReceiver"
+                         address="<%= @cluster_receiver_address %>"
+                         port="<%= @cluster_receiver_port %>"
+                         autoBind="100"
+                         selectorTimeout="5000"
+                         maxThreads="6"/>
+            <Sender className="org.apache.catalina.tribes.transport.ReplicationTransmitter">
+               <Transport className="org.apache.catalina.tribes.transport.nio.PooledParallelSender"/>
+            </Sender>
+            <Interceptor className="org.apache.catalina.tribes.group.interceptors.TcpFailureDetector"/>
+            <Interceptor className="org.apache.catalina.tribes.group.interceptors.MessageDispatch15Interceptor"/>
+         </Channel>
+         <Valve className="org.apache.catalina.ha.tcp.ReplicationValve"
+                filter=".*\.gif;.*\.js;.*\.jpg;.*\.png;.*\.css;.*\.txt;"/>
+         <Valve className="org.apache.catalina.ha.session.JvmRouteBinderValve"/>
+<%- if @cluster_farm_deployer -%>
+         <Deployer className="org.apache.catalina.ha.deploy.FarmWarDeployer"
+                    tempDir="<%= @catalina_tmpdir_real %>"
+                    deployDir="<%= @cluster_farm_deployer_deploydir_real %>"
+                    watchDir="<%= @cluster_farm_deployer_watchdir_real %>"
+                    watchEnabled="<%= @cluster_farm_deployer_watch_enabled %>"/>
+<%- end -%>
+<%- if scope.function_versioncmp([@maj_version, '8']) < 0 -%>
+         <ClusterListener className="org.apache.catalina.ha.session.JvmRouteSessionIDBinderListener"/>
+<%- end -%>
+         <ClusterListener className="org.apache.catalina.ha.session.ClusterSessionListener"/>
+      </Cluster>

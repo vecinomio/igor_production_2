@@ -1,0 +1,55 @@
+# ******************
+# Managed by Puppet
+# ******************
+
+<% if @java_home and @java_home != '' %>JAVA_HOME="<%= @java_home %>"
+
+<% end -%>
+CATALINA_BASE="<%= @catalina_base_real %>"
+CATALINA_HOME="<%= @catalina_home_real %>"
+JASPER_HOME="<%= @jasper_home_real %>"
+CATALINA_TMPDIR="<%= @catalina_tmpdir_real %>"
+<% if @catalina_pid_real and @catalina_pid_real != '' %>CATALINA_PID="<%= @catalina_pid_real %>"
+<% end -%>
+
+<% if @java_opts_real and @java_opts_real != '' %>JAVA_OPTS="<%= @java_opts_real %>"
+<% end -%>
+<% if @catalina_opts_real and @catalina_opts_real != '' %>CATALINA_OPTS="<%= @catalina_opts_real %>"
+<% end -%>
+
+<% if scope['::osfamily'] == 'Debian' -%>
+TOMCAT<%= @maj_version %>_USER="<%= @tomcat_user %>"
+TOMCAT<%= @maj_version %>_GROUP="<%= @tomcat_group %>"
+
+<% else -%>
+TOMCAT_USER="<%= @tomcat_user %>"
+TOMCAT_GROUP="<%= @tomcat_group %>"
+
+<% end -%>
+<% if @lang and @lang != '' -%>LANG="<%= @lang %>"<% end -%>
+<% if scope['::osfamily'] == 'Debian' -%>
+TOMCAT<%= @maj_version %>_SECURITY="<%= @security_manager_real %>"
+<% else -%>
+SECURITY_MANAGER="<%= @security_manager_real %>"
+<% end -%>
+
+<% if scope['::osfamily'] == 'RedHat' -%>
+SHUTDOWN_WAIT="<%= @shutdown_wait %>"
+SHUTDOWN_VERBOSE="<%= @shutdown_verbose %>"
+
+<% end -%>
+<% if @jpda_transport and @jpda_transport != '' %>JPDA_TRANSPORT="<%= @jpda_transport %>"
+<% end -%>
+<% if @jpda_address and @jpda_address != '' %>JPDA_ADDRESS="<%= @jpda_address %>"
+<% end -%>
+<% if @jpda_suspend and @jpda_suspend != '' %>JPDA_SUSPEND="<%= @jpda_suspend %>"
+<% end -%>
+<% if @jpda_opts_real and @jpda_opts_real != '' %>JPDA_OPTS="<%= @jpda_opts_real %>"
+<% end -%>
+
+# Custom variables
+<%- if @custom_variables and ! @custom_variables.empty? -%>
+  <%- @custom_variables.each_pair do |attrib, value| -%>
+<%= attrib %>="<%= value %>"
+  <%- end -%>
+<%- end -%>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+# ******************
+# Managed by Puppet
+# ******************
+-->
+<Server<%- if @server_params_real and ! @server_params_real.empty? -%>
+  <%- @server_params_real.each_pair do |attrib, value| -%> <%= attrib %>=<%= "#{value}".encode(:xml => :attr) %><%- end -%>
+<%- end -%>>
